@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomeClear</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #2ECC8A;
+      --green-dk: #1aab6d;
+      --green-lt: #edfaf4;
+      --navy: #0D1B2A;
+      --gray: #6b7a8d;
+      --gray-lt: #f5f6f8;
+      --border: #e4e8ed;
+      --white: #fff;
+      --amber: #f59e0b;
+      --amber-lt: #fffbeb;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #eef0f4;
+      color: var(--navy);
+      min-height: 100vh;
+      font-size: 15px;
+    }
+
+    nav {
+      background: var(--navy);
+      padding: 0 24px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-mark {
+      width: 26px; height: 26px;
+      background: var(--green);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+    }
+    .nav-ref { font-size: 12px; color: rgba(255,255,255,0.35); }
+
+    .wrap {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 28px 18px 60px;
+    }
+
+    /* tabs */
+    .tabs {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 20px;
+      background: var(--white);
+      padding: 4px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+    }
+    .tab {
+      flex: 1;
+      padding: 9px;
+      border-radius: 8px;
+      border: none;
+      background: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .tab:hover { color: var(--navy); }
+    .tab.active { background: var(--navy); color: white; font-weight: 600; }
+    .tab:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+    /* hero */
+    .hero {
+      background: var(--navy);
+      border-radius: 14px;
+      padding: 22px 24px 20px;
+      color: white;
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(13,27,42,0.12);
+    }
+    .hero::before {
+      content: '';
+      position: absolute; right: -40px; top: -40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(46,204,138,0.07);
+      pointer-events: none;
+    }
+    .hero-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-address {
+      font-family: 'Syne', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 3px;
+    }
+    .hero-sub { font-size: 12px; color: rgba(255,255,255,0.4); }
+    .hero-price label {
+      font-size: 10px;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: block;
+      margin-bottom: 2px;
+      text-align: right;
+    }
+    .hero-price strong {
+      font-family: 'Syne', sans-serif;
+      font-size: 21px;
+      font-weight: 800;
+      color: var(--green);
+    }
+
+    /* stat bar */
+    .stat-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      z-index: 1;
+      gap: 0;
+    }
+    .stat-bar-item {
+      padding: 0 0 0 16px;
+      border-left: 1px solid rgba(255,255,255,0.08);
+    }
+    .stat-bar-item:first-child {
+      padding-left: 0;
+      border-left: none;
+    }
+    .sbi-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: rgba(255,255,255,0.38);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .sbi-value {
+      font-size: 13.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .sbi-value.green { color: var(--green); }
+    .sbi-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .sbi-dot.green { background: var(--green); box-shadow: 0 0 0 2px rgba(46,204,138,0.25); }
+    .sbi-dot.amber { background: var(--amber); box-shadow: 0 0 0 2px rgba(245,158,11,0.25); }
+
+    /* track */
+    .track {
+      background: var(--white);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 18px 20px 20px;
+      margin-bottom: 12px;
+    }
+    .steps {
+      display: flex;
+      align-items: flex-start;
+    }
+    .step {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 11px; left: 55%;
+      width: calc(100% - 16px);
+      height: 2px;
+      background: var(--border);
+      z-index: 0;
+    }
+    .step.done:not(:last-child)::after { background: var(--green); }
+    .step.now:not(:last-child)::after {
+      background: linear-gradient(to right, var(--green) 40%, var(--border) 100%);
+    }
+    .s-node {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px;
+      z-index: 1;
+      position: relative;
+      color: var(--gray);
+    }
+    .step.done .s-node { background: var(--green); border-color: var(--green); color: white; }
+    .step.now .s-node { border-color: var(--green); color: var(--green-dk); box-shadow: 0 0 0 4px var(--green-lt); }
+    .s-name {
+      font-size: 9px;
+      text-align: center;
+      margin-top: 7px;
+      color: var(--gray);
+      font-weight: 500;
+      line-height: 1.3;
+      max-width: 50px;
+    }
+    .step.done .s-name { color: var(--navy); font-weight: 600; }
+    .step.now .s-name { color: var(--green-dk); font-weight: 700; }
+
+    /* now card */
+    .now-card {
+      border-radius: 12px;
+      padding: 15px 18px;
+      margin-bottom: 12px;
+      border: 1.5px solid;
+    }
+    .now-card.green { background: var(--green-lt); border-color: var(--green); }
+    .now-card.amber { background: var(--amber-lt); border-color: var(--amber); }
+    .now-body strong { display: block; font-size: 13.5px; font-weight: 700; margin-bottom: 4px; }
+    .now-body p { font-size: 13px; color: #374151; line-height: 1.5; }
+
+    /* action */
+    .action-card {
+      background: var(--white);
+      border-radius: 12px;
+      border: 1.5px solid var(--amber);
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .action-card.gone { display: none; }
+    .ac-body { flex: 1; }
+    .ac-body strong { display: block; font-size: 13.5px; font-weight: 700; margin-bottom: 2px; }
+    .ac-body p { font-size: 12.5px; color: var(--gray); line-height: 1.4; }
+    .ac-btn {
+      padding: 7px 14px;
+      background: var(--navy);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .ac-btn:hover { opacity: 0.9; }
+    .ac-btn:active { transform: scale(0.98); }
+    .ac-btn:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+    /* next steps */
+    .sec-title {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--gray);
+      margin-bottom: 8px;
+      padding-left: 2px;
+    }
+    .steps-list {
+      background: var(--white);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .ns {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ns:last-child { border-bottom: none; }
+    .ns-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .ns-dot.green { background: var(--green); }
+    .ns-dot.amber { background: var(--amber); }
+    .ns-dot.gray { background: #d1d5db; }
+    .ns-text { flex: 1; }
+    .ns-text strong { font-size: 13.5px; font-weight: 600; display: block; margin-bottom: 1px; }
+    .ns-text span { font-size: 12px; color: var(--gray); }
+    .ns-date { font-size: 12px; font-weight: 600; color: var(--gray); white-space: nowrap; }
+    .ns-date.g { color: var(--green-dk); }
+    .ns-date.a { color: #92400e; }
+
+    /* contacts */
+    .contacts {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .contact {
+      flex: 1;
+      background: var(--white);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 13px 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .av {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: white;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .av-g { background: var(--green-dk); }
+    .c-info strong { display: block; font-size: 13px; font-weight: 600; }
+    .c-info span { font-size: 11px; color: var(--gray); }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    /* toast */
+    .toast {
+      position: fixed;
+      bottom: 18px; right: 18px;
+      background: var(--navy);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      z-index: 999;
+      transform: translateY(50px);
+      opacity: 0;
+      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
+      pointer-events: none;
+    }
+    .toast.on { transform: translateY(0); opacity: 1; }
+    @media (prefers-reduced-motion: reduce) {
+      .toast { transition-duration: 0.05s; }
+    }
+
+    @media (max-width: 460px) {
+      .hero-top { flex-direction: column; gap: 10px; }
+      .hero-price label { text-align: left; }
+      .contacts { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <div class="logo-mark">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+        <path d="M9 21V12h6v9"/>
+      </svg>
+    </div>
+    HomeClear
+  </div>
+  <div class="nav-ref">HC-0821</div>
+</nav>
+
+<div class="wrap">
+
+  <div class="tabs" role="tablist" aria-label="Selling or Buying view">
+    <button class="tab active" role="tab" aria-selected="true" aria-controls="v-seller" id="tab-seller" onclick="show('seller',this)">Selling</button>
+    <button class="tab" role="tab" aria-selected="false" aria-controls="v-buyer" id="tab-buyer" onclick="show('buyer',this)">Buying</button>
+  </div>
+
+  <div id="v-seller" role="tabpanel" aria-labelledby="tab-seller">
+    <div class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="hero-address">12 Elm Grove, SE22 8PT</div>
+          <div class="hero-sub">Knight Frank · Offer agreed 14 Feb 2025</div>
+        </div>
+        <div class="hero-price">
+          <label>Sale price</label>
+          <strong>£485,000</strong>
+        </div>
+      </div>
+      <div class="stat-bar">
+        <div class="stat-bar-item">
+          <span class="sbi-label">Status</span>
+          <span class="sbi-value"><span class="sbi-dot green" aria-hidden="true"></span>On track</span>
+        </div>
+        <div class="stat-bar-item">
+          <span class="sbi-label">Current stage</span>
+          <span class="sbi-value">Searches & Survey</span>
+        </div>
+        <div class="stat-bar-item">
+          <span class="sbi-label">Est. completion</span>
+          <span class="sbi-value green">11 Apr 2025</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="steps">
+        <div class="step done"><div class="s-node" aria-hidden="true">✓</div><div class="s-name">Offer Agreed</div></div>
+        <div class="step done"><div class="s-node" aria-hidden="true">✓</div><div class="s-name">Solicitors Instructed</div></div>
+        <div class="step done"><div class="s-node" aria-hidden="true">✓</div><div class="s-name">Contracts Drafted</div></div>
+        <div class="step now"><div class="s-node" aria-hidden="true">→</div><div class="s-name">Searches & Survey</div></div>
+        <div class="step"><div class="s-node">5</div><div class="s-name">Enquiries</div></div>
+        <div class="step"><div class="s-node">6</div><div class="s-name">Exchange</div></div>
+        <div class="step"><div class="s-node" style="font-size:9px">✓</div><div class="s-name">Done</div></div>
+      </div>
+    </div>
+
+    <div class="now-card green">
+      <div class="now-body">
+        <strong>Right now: searches & survey</strong>
+        <p>The buyer's solicitor has ordered property searches. A survey is booked for <strong>28 February</strong> — please be out for the morning. Nothing else needed from you at this stage.</p>
+      </div>
+    </div>
+
+    <div class="action-card" id="s-action">
+      <div class="ac-body">
+        <strong>Complete your TA6 & TA10 forms</strong>
+        <p>Return to Tom Lewis (your solicitor) as soon as possible.</p>
+      </div>
+      <button class="ac-btn" type="button" onclick="dismiss('s-action')">Done ✓</button>
+    </div>
+
+    <div class="sec-title">What happens next</div>
+    <div class="steps-list">
+      <div class="ns">
+        <span class="ns-dot amber" aria-hidden="true"></span>
+        <div class="ns-text"><strong>Survey takes place</strong><span>Be out of the property by 9am</span></div>
+        <span class="ns-date a">28 Feb</span>
+      </div>
+      <div class="ns">
+        <span class="ns-dot gray" aria-hidden="true"></span>
+        <div class="ns-text"><strong>Searches come back</strong><span>Solicitors review results</span></div>
+        <span class="ns-date">~5 Mar</span>
+      </div>
+      <div class="ns">
+        <span class="ns-dot gray" aria-hidden="true"></span>
+        <div class="ns-text"><strong>Any enquiries resolved</strong><span>Your solicitor will handle these</span></div>
+        <span class="ns-date">~15 Mar</span>
+      </div>
+      <div class="ns">
+        <span class="ns-dot gray" aria-hidden="true"></span>
+        <div class="ns-text"><strong>Exchange of contracts</strong><span>Sale becomes legally binding</span></div>
+        <span class="ns-date">~28 Mar</span>
+      </div>
+      <div class="ns">
+        <span class="ns-dot green" aria-hidden="true"></span>
+        <div class="ns-text"><strong>Completion — hand over keys</strong><span>You receive the full sale proceeds</span></div>
+        <span class="ns-date g">~11 Apr</span>
+      </div>
+    </div>
+
+    <div class="sec-title">Your team</div>
+    <div class="contacts">
+      <div class="contact">
+        <div class="av av-g">JM</div>
+        <div class="c-info"><strong>James Miller</strong><span>Estate Agent</span></div>
+      </div>
+      <div class="contact">
+        <div class="av">TL</div>
+        <div class="c-info"><strong>Tom Lewis</strong><span>Your Solicitor</span></div>
+      </div>
+    </div>
+
+    <p class="footer">Updates are posted here as soon as anything changes.</p>
+  </div>
+
+  <div id="v-buyer" role="tabpanel" aria-labelledby="tab-buyer" hidden>
+    <div class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="hero-address">12 Elm Grove, SE22 8PT</div>
+          <div class="hero-sub">Offer accepted 14 Feb 2025</div>
+        </div>
+        <div class="hero-price">
+          <label>Purchase price</label>
+          <strong>£485,000</strong>
+        </div>
+      </div>
+      <div class="stat-bar">
+        <div class="stat-bar-item">
+          <span class="sbi-label">Status</span>
+          <span class="sbi-value"><span class="sbi-dot green" aria-hidden="true"></span>On track</span>
+        </div>
+        <div class="stat-bar-item">
+          <span class="sbi-label">Current stage</span>
+          <span class="sbi-value">Searches & Survey</span>
+        </div>
+        <div class="stat-bar-item">
+          <span class="sbi-label">Est. completion</span>
+          <span class="sbi-value green">11 Apr 2025</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="track">
+      <div class="steps">
+        <div class="step done"><div class="s-node" aria-hidden="true">✓</div><div class="s-name">Offer Agreed</div></div>
+        <div class="step done"><div class="s-node" aria-hidden="true">✓</div><div class="s-name">Solicitor Instructed</div></div>
+        <div class="step done"><div class="s-node" aria-hidden="true">✓</div><div class="s-name">Contracts Drafted</div></div>
+        <div class="step now"><div class="s-node" aria-hidden="true">→</div><div class="s-name">Searches & Survey</div></div>
+        <div class="step"><div class="s-node">5</div><div class="s-name">Enquiries</div></div>
+        <div class="step"><div class="s-node">6</div><div class="s-name">Exchange</div></div>
+        <div class="step"><div class="s-node" style="font-size:9px">✓</div><div class="s-name">Done</div></div>
+      </div>
+    </div>
+
+    <div class="now-card green">
+      <div class="now-body">
+        <strong>Right now: searches & survey</strong>
+        <p>Your solicitor Sarah Chen has ordered all property searches. Your survey is booked for <strong>28 February</strong>. Once results are in, Sarah will send you a full report.</p>
+      </div>
+    </div>
+
+    <div class="action-card" id="b-action">
+      <div class="ac-body">
+        <strong>Mortgage offer expected by 5 March</strong>
+        <p>If you haven't heard from Halifax by then, chase your broker.</p>
+      </div>
+      <button class="ac-btn" type="button" onclick="dismiss('b-action')">Got it ✓</button>
+    </div>
+
+    <div class="sec-title">What happens next</div>
+    <div class="steps-list">
+      <div class="ns">
+        <span class="ns-dot amber" aria-hidden="true"></span>
+        <div class="ns-text"><strong>Survey report received</strong><span>Sarah will flag anything to know</span></div>
+        <span class="ns-date a">~4 Mar</span>
+      </div>
+      <div class="ns">
+        <span class="ns-dot gray" aria-hidden="true"></span>
+        <div class="ns-text"><strong>Search results & solicitor report</strong><span>Plain English summary from Sarah</span></div>
+        <span class="ns-date">~7 Mar</span>
+      </div>
+      <div class="ns">
+        <span class="ns-dot gray" aria-hidden="true"></span>
+        <div class="ns-text"><strong>Formal mortgage offer</strong><span>Required before exchange can happen</span></div>
+        <span class="ns-date">~5 Mar</span>
+      </div>
+      <div class="ns">
+        <span class="ns-dot gray" aria-hidden="true"></span>
+        <div class="ns-text"><strong>Exchange of contracts</strong><span>Deposit paid — purchase legally binding</span></div>
+        <span class="ns-date">~28 Mar</span>
+      </div>
+      <div class="ns">
+        <span class="ns-dot green" aria-hidden="true"></span>
+        <div class="ns-text"><strong>Completion — collect your keys</strong><span>The property is legally yours</span></div>
+        <span class="ns-date g">~11 Apr</span>
+      </div>
+    </div>
+
+    <div class="sec-title">Your team</div>
+    <div class="contacts">
+      <div class="contact">
+        <div class="av av-g">JM</div>
+        <div class="c-info"><strong>James Miller</strong><span>Your Agent</span></div>
+      </div>
+      <div class="contact">
+        <div class="av">SC</div>
+        <div class="c-info"><strong>Sarah Chen</strong><span>Your Solicitor</span></div>
+      </div>
+    </div>
+
+    <p class="footer">Dates shown are estimates. Your solicitor will notify you of any changes.</p>
+  </div>
+
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Marked as done</div>
+
+<script>
+function show(id, btn) {
+  var seller = document.getElementById('v-seller');
+  var buyer = document.getElementById('v-buyer');
+  var tabs = document.querySelectorAll('.tab');
+  seller.hidden = id !== 'seller';
+  buyer.hidden = id !== 'buyer';
+  tabs.forEach(function(t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+  btn.classList.add('active');
+  btn.setAttribute('aria-selected', 'true');
+}
+function dismiss(id) {
+  document.getElementById(id).classList.add('gone');
+  var t = document.getElementById('toast');
+  t.classList.add('on');
+  t.textContent = 'Marked as done';
+  setTimeout(function() { t.classList.remove('on'); }, 2200);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomeClear — Deal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">
+      <div class="logo-mark">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          <path d="M9 21V12h6v9"/>
+        </svg>
+      </div>
+      HomeClear
+    </a>
+    <div class="nav-user" id="nav-user"></div>
+  </nav>
+
+  <div class="wrap">
+    <p class="page-role" id="page-role"></p>
+    <a href="index.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to deals
+    </a>
+
+    <div class="deal-flow" id="deal-flow" aria-hidden="true">
+      <div class="deal-flow-party deal-flow-seller">
+        <span class="deal-flow-label">Seller</span>
+        <span class="deal-flow-name" id="deal-seller">—</span>
+      </div>
+      <div class="deal-flow-arrow" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="deal-flow-party deal-flow-buyer">
+        <span class="deal-flow-label">Buyer</span>
+        <span class="deal-flow-name" id="deal-buyer">—</span>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="hero-address" id="hero-address">—</div>
+          <div class="hero-sub">Sale</div>
+        </div>
+        <div class="hero-price">
+          <label>Sale price</label>
+          <strong id="hero-price">—</strong>
+        </div>
+      </div>
+      <div class="hero-parties">
+        <span>Agent: <strong id="hero-agent">—</strong></span>
+        <span>Solicitor: <strong id="hero-solicitor">—</strong></span>
+      </div>
+      <div class="stat-bar">
+        <div class="stat-bar-item">
+          <span class="sbi-label">Status</span>
+          <span class="sbi-value" id="stat-status"><span class="sbi-dot green" aria-hidden="true"></span><span id="stat-status-text">—</span></span>
+        </div>
+        <div class="stat-bar-item">
+          <span class="sbi-label">Current stage</span>
+          <span class="sbi-value" id="stat-stage">—</span>
+        </div>
+        <div class="stat-bar-item">
+          <span class="sbi-label">Est. completion</span>
+          <span class="sbi-value green" id="stat-completion">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-title">Tasks</div>
+    <div class="section-block" id="tasks-block">
+      <div class="section-empty">No tasks yet.</div>
+    </div>
+
+    <div class="sec-title">Documents</div>
+    <div class="section-block" id="docs-block">
+      <div class="section-empty">No documents yet.</div>
+    </div>
+
+    <div class="sec-title">Messages</div>
+    <div class="section-block messages-section" id="messages-block">
+      <div class="messages-list" id="messages-list"></div>
+      <div class="messages-input-wrap">
+        <input type="text" class="messages-input" id="messages-input" placeholder="Type a message…" maxlength="500">
+        <button type="button" class="messages-send" id="messages-send">Send</button>
+      </div>
+    </div>
+
+    <p class="footer">Updates appear here as the deal progresses.</p>
+  </div>
+
+  <div class="doc-modal" id="doc-modal" role="dialog" aria-modal="true" aria-labelledby="doc-modal-title" hidden>
+    <div class="doc-modal-backdrop" id="doc-modal-backdrop"></div>
+    <div class="doc-modal-panel">
+      <div class="doc-modal-header">
+        <h2 class="doc-modal-title" id="doc-modal-title">Document</h2>
+        <button type="button" class="doc-modal-close" id="doc-modal-close" aria-label="Close document">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="doc-modal-body" id="doc-modal-body"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    (function () {
+      if (!window.HomeClear.requireAuth()) return;
+
+      var user = window.HomeClear.getCurrentUser();
+      var roleLabel = window.HomeClear.ROLE_LABELS[user.role] || user.role;
+
+      window.HomeClear.renderNavUser(document.getElementById('nav-user'));
+
+      var roleEl = document.getElementById('page-role');
+      roleEl.textContent = roleLabel + ' view';
+      roleEl.className = 'page-role ' + user.role;
+
+      var params = new URLSearchParams(window.location.search);
+      var id = params.get('id') || '1';
+      var project = window.HomeClear.getProjectById(id);
+      if (!project) {
+        project = window.HomeClear.getDefaultProject();
+      }
+      document.getElementById('deal-seller').textContent = project.sellerName || '—';
+      document.getElementById('deal-buyer').textContent = project.buyerName || '—';
+      document.getElementById('hero-address').textContent = project.address;
+      document.getElementById('hero-price').textContent = project.salePrice;
+      document.getElementById('hero-agent').textContent = project.agentName;
+      document.getElementById('hero-solicitor').textContent = project.solicitorName;
+      document.getElementById('stat-status-text').textContent = project.status;
+      document.getElementById('stat-stage').textContent = project.currentStage || '—';
+      document.getElementById('stat-completion').textContent = project.estimatedCompletion || '—';
+
+      var tasks = window.HomeClear.getSaleTasks(id);
+      var tasksBlock = document.getElementById('tasks-block');
+      tasksBlock.innerHTML = '';
+      tasks.forEach(function (t) {
+        var row = document.createElement('div');
+        row.className = 'row' + (t.done ? ' task-done' : '');
+        var dateLabel = t.done && t.completedDate ? '<span class="row-date">' + escapeHtml(t.completedDate) + '</span>' : (!t.done && t.estimatedDate ? '<span class="row-date row-date-est">Est. ' + escapeHtml(t.estimatedDate) + '</span>' : '');
+        row.innerHTML =
+          '<span class="row-status" aria-hidden="true">' + (t.done ? '✓' : '') + '</span>' +
+          '<div class="row-text">' +
+            '<strong>' + escapeHtml(t.label) + '</strong>' +
+            '<span>' + escapeHtml(t.detail) + '</span>' +
+            (dateLabel ? dateLabel : '') +
+          '</div>';
+        tasksBlock.appendChild(row);
+      });
+
+      var docs = window.HomeClear.getSaleDocuments(id);
+      var docsBlock = document.getElementById('docs-block');
+      docsBlock.innerHTML = '';
+      docs.forEach(function (d) {
+        var row = document.createElement('div');
+        row.className = 'row' + (d.received ? ' doc-received doc-row-clickable' : '');
+        if (d.received && d.docKey) row.setAttribute('data-doc-key', d.docKey);
+        var dateLabel = d.received && d.completedDate ? '<span class="row-date">' + escapeHtml(d.completedDate) + '</span>' : (!d.received && d.estimatedDate ? '<span class="row-date row-date-est">Est. ' + escapeHtml(d.estimatedDate) + '</span>' : '');
+        row.innerHTML =
+          '<span class="row-status">' + (d.received ? '✓' : '—') + '</span>' +
+          '<div class="row-text">' +
+            '<strong>' + escapeHtml(d.label) + '</strong>' +
+            '<span>' + escapeHtml(d.detail) + '</span>' +
+            (dateLabel ? dateLabel : '') +
+          '</div>' +
+          (d.received && d.docKey ? '<span class="row-view-doc">View</span>' : '');
+        docsBlock.appendChild(row);
+      });
+
+      docsBlock.addEventListener('click', function (e) {
+        var row = e.target.closest('.doc-row-clickable[data-doc-key]');
+        if (!row) return;
+        var docKey = row.getAttribute('data-doc-key');
+        var content = window.HomeClear.getMockDocumentContent(docKey);
+        document.getElementById('doc-modal-title').textContent = content.title;
+        document.getElementById('doc-modal-body').innerHTML = '<pre class="doc-modal-pre">' + escapeHtml(content.body) + '</pre>';
+        document.getElementById('doc-modal').hidden = false;
+      });
+
+      var modal = document.getElementById('doc-modal');
+      var closeModal = function () { modal.hidden = true; };
+      document.getElementById('doc-modal-close').addEventListener('click', closeModal);
+      document.getElementById('doc-modal-backdrop').addEventListener('click', closeModal);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+
+      var messages = window.HomeClear.getSaleMessages(id);
+      var currentUser = window.HomeClear.getCurrentUser();
+      var isAgent = currentUser.role === 'agent';
+      var messagesList = document.getElementById('messages-list');
+      messages.forEach(function (m) {
+        var isMe = (m.from === 'agent' && isAgent) || (m.from === 'solicitor' && !isAgent);
+        var msgEl = document.createElement('div');
+        msgEl.className = 'message message--' + (isMe ? 'me' : 'them');
+        msgEl.innerHTML =
+          '<span class="message-meta">' + escapeHtml(m.name) + ' · ' + escapeHtml(m.date) + '</span>' +
+          '<span class="message-text">' + escapeHtml(m.text) + '</span>';
+        messagesList.appendChild(msgEl);
+      });
+
+      var inputEl = document.getElementById('messages-input');
+      var sendBtn = document.getElementById('messages-send');
+      function sendMessage() {
+        var text = (inputEl.value || '').trim();
+        if (!text) return;
+        var msgEl = document.createElement('div');
+        msgEl.className = 'message message--me';
+        var now = new Date();
+        var dateStr = now.getDate() + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()] + ' ' + now.getFullYear() + ', ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+        msgEl.innerHTML = '<span class="message-meta">' + escapeHtml(currentUser.name) + ' · ' + dateStr + '</span><span class="message-text">' + escapeHtml(text) + '</span>';
+        messagesList.appendChild(msgEl);
+        messagesList.scrollTop = messagesList.scrollHeight;
+        inputEl.value = '';
+      }
+      sendBtn.addEventListener('click', sendMessage);
+      inputEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
+
+      function escapeHtml(s) {
+        var div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+      }
+    })();
+  </script>
+</body>
+</html>

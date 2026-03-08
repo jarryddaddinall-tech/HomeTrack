@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-accent: #10b981;
+  --color-accent-hover: #059669;
+  --color-text-primary: #0f172a; /* slate-900 */
+  --color-text-secondary: #475569; /* slate-600 */
+  --color-text-muted: #64748b;    /* slate-500 */
+}
+
+/* ========== UI audit: design tokens ========== */
+/* Typography: page title (h1) = text-2xl font-bold; section (h2) = text-sm font-semibold uppercase; body = text-slate-600 */
+/* Buttons: primary = px-5 py-2.5 text-sm; primary-lg = px-6 py-3.5 text-base; always inline-flex items-center justify-center gap-2 */
+/* Inputs: rounded-xl px-4 py-2.5 text-sm; label spacing mt-1.5 */
+/* Spacing: main py-8 (list) / py-10 (form); section mb-10; card p-6 */
+
+/* Blurred foliage-inspired background */
+.bg-foliage {
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(16, 185, 129, 0.08), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 50%, rgba(52, 211, 153, 0.06), transparent),
+    radial-gradient(ellipse 60% 40% at 0% 80%, rgba(110, 231, 183, 0.06), transparent),
+    linear-gradient(180deg, #f8faf8 0%, #f1f5f1 50%, #e8f0e8 100%);
+}
+
+/* Card with layered, floating effect */
+@layer components {
+  .card-base {
+    @apply rounded-card border border-white/60 bg-white/95 shadow-card backdrop-blur-sm;
+  }
+  .card-hover {
+    @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover hover:border-slate-200/60;
+  }
+  .input-focus {
+    @apply focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent/30;
+  }
+  /* Buttons: consistent alignment and size */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium text-white shadow-card transition-colors hover:bg-accent-600 hover:shadow-card-hover;
+  }
+  .btn-primary-lg {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-base font-medium text-white shadow-card transition-colors hover:bg-accent-600 hover:shadow-card-hover;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-soft-sm transition-colors hover:bg-slate-50;
+  }
+  .btn-nav {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium text-white shadow-card transition-colors hover:bg-accent-600;
+  }
+  .page-title {
+    @apply font-display text-2xl font-bold text-slate-900;
+  }
+  .section-title {
+    @apply text-sm font-semibold uppercase tracking-wide text-slate-500;
+  }
+  .back-link {
+    @apply inline-flex items-center gap-1.5 text-sm text-slate-600 transition-colors hover:text-slate-900;
+  }
+}

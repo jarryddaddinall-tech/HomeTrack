@@ -14,8 +14,6 @@ import { UserMenu } from "@/components/user-menu";
 import { AddDocumentForm } from "@/components/add-document-form";
 import { DocumentStatusSelect } from "@/components/document-status-select";
 import { MortgageCalculator } from "@/components/mortgage-calculator";
-import { PropertyViewConsumer } from "@/components/property-view-consumer";
-import { PropertyViewSwitcher } from "@/components/property-view-switcher";
 
 const STAGE_ORDER: TransactionStage[] = [
   "offer_accepted",
@@ -42,18 +40,12 @@ function formatDate(dateStr: string) {
   });
 }
 
-type ViewMode = "buyer" | "seller" | "expert";
-
 export default async function PropertyDetailPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ view?: string }>;
 }) {
   const { id } = await params;
-  const { view: viewParam } = await searchParams;
-
   const cookieStore = await cookies();
   const user = cookieStore.get("mock-auth")?.value ?? null;
 
@@ -64,33 +56,6 @@ export default async function PropertyDetailPage({
   const property = getPropertyById(id);
   if (!property) {
     notFound();
-  }
-
-  // Default to consumer view: Buyer for buying, Seller for selling (Instagram-simple)
-  const defaultView: ViewMode = property.type === "selling" ? "seller" : "buyer";
-  const view: ViewMode =
-    viewParam === "buyer" || viewParam === "seller" || viewParam === "expert"
-      ? viewParam
-      : defaultView;
-
-  // Consumer view: simple, status + completion upfront (Buyer or Seller)
-  if (view === "buyer" || view === "seller") {
-    return (
-      <div className="min-h-screen">
-        <header className="border-b border-white/40 bg-white/90 shadow-soft-sm backdrop-blur-md">
-          <div className="mx-auto flex max-w-4xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-            <Link href="/dashboard" className="font-display text-xl font-semibold text-slate-800">
-              HomeClear
-            </Link>
-            <div className="flex items-center gap-4">
-              <PropertyViewSwitcher propertyId={id} currentView={view} />
-              <UserMenu user={user} />
-            </div>
-          </div>
-        </header>
-        <PropertyViewConsumer property={property} variant={view} propertyId={id} />
-      </div>
-    );
   }
 
   const isSelling = property.type === "selling";
@@ -105,28 +70,24 @@ export default async function PropertyDetailPage({
     <div className="min-h-screen">
       <header className="border-b border-white/40 bg-white/90 shadow-soft-sm backdrop-blur-md">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-          <Link href="/dashboard" className="font-display text-xl font-semibold text-slate-800">
+          <Link href="/dashboard" className="text-xl font-semibold text-slate-900">
             HomeClear
           </Link>
           <nav className="flex items-center gap-4">
             <Link
               href={`/dashboard/property/${id}/edit`}
-              className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-soft-sm hover:bg-slate-50"
+              className="btn-secondary"
             >
               Edit
             </Link>
-            <PropertyViewSwitcher propertyId={id} currentView="expert" />
             <UserMenu user={user} />
           </nav>
         </div>
       </header>
 
       <main className="mx-auto max-w-4xl px-4 py-8">
-        <Link
-          href="/dashboard"
-          className="mb-6 inline-flex items-center text-sm text-slate-600 hover:text-slate-900"
-        >
-          <svg className="mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <Link href="/dashboard" className="back-link mb-6">
+          <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           Back to dashboard

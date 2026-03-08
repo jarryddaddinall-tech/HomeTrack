@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomeClear — New project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">
+      <div class="logo-mark">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          <path d="M9 21V12h6v9"/>
+        </svg>
+      </div>
+      HomeClear
+    </a>
+    <div class="nav-user" id="nav-user"></div>
+  </nav>
+
+  <div class="form-wrap">
+    <p class="page-role" id="page-role"></p>
+    <a href="index.html" class="back-link">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to deals
+    </a>
+    <h1 class="sec-title" style="margin-bottom: 20px;">New project</h1>
+    <form id="new-project-form" action="index.html" method="get">
+      <div class="form-group">
+        <label for="address">Property address</label>
+        <input type="text" id="address" name="address" required placeholder="e.g. 12 Elm Grove, SE22 8PT">
+      </div>
+      <div class="form-group">
+        <label for="sellerName">Seller name</label>
+        <input type="text" id="sellerName" name="sellerName" placeholder="e.g. Jarryd Pool">
+      </div>
+      <div class="form-group">
+        <label for="buyerName">Buyer name</label>
+        <input type="text" id="buyerName" name="buyerName" placeholder="e.g. Mike Villa">
+      </div>
+      <div class="form-group">
+        <label for="salePrice">Sale price</label>
+        <input type="text" id="salePrice" name="salePrice" required placeholder="e.g. £485,000">
+      </div>
+      <div class="form-group">
+        <label for="agentName">Agent name</label>
+        <input type="text" id="agentName" name="agentName" required placeholder="e.g. James Miller">
+      </div>
+      <div class="form-group">
+        <label for="solicitorName">Solicitor name</label>
+        <input type="text" id="solicitorName" name="solicitorName" required placeholder="e.g. Tom Lewis">
+      </div>
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" name="status">
+          <option value="On track">On track</option>
+          <option value="At risk">At risk</option>
+          <option value="Delayed">Delayed</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="estimatedCompletion">Estimated completion</label>
+        <input type="text" id="estimatedCompletion" name="estimatedCompletion" placeholder="e.g. 11 Apr 2025">
+      </div>
+      <div class="form-actions">
+        <a href="index.html" class="btn-primary" style="background: var(--gray);">Cancel</a>
+        <button type="submit" class="btn-primary">Create project</button>
+      </div>
+    </form>
+    <p class="footer">One property per project. Names only for now; no actions.</p>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    (function () {
+      if (!window.HomeClear.requireAuth()) return;
+
+      var user = window.HomeClear.getCurrentUser();
+      var roleLabel = window.HomeClear.ROLE_LABELS[user.role] || user.role;
+
+      window.HomeClear.renderNavUser(document.getElementById('nav-user'));
+
+      document.getElementById('page-role').textContent = roleLabel + ' view';
+      document.getElementById('page-role').className = 'page-role ' + user.role;
+    })();
+    document.getElementById('new-project-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var project = {
+        id: 2,
+        address: document.getElementById('address').value.trim(),
+        sellerName: document.getElementById('sellerName').value.trim() || '—',
+        buyerName: document.getElementById('buyerName').value.trim() || '—',
+        salePrice: document.getElementById('salePrice').value.trim(),
+        agentName: document.getElementById('agentName').value.trim(),
+        solicitorName: document.getElementById('solicitorName').value.trim(),
+        status: document.getElementById('status').value,
+        currentStage: 'Searches & Survey',
+        estimatedCompletion: document.getElementById('estimatedCompletion').value.trim() || '—'
+      };
+      if (window.HomeClear.setCreatedProject(project)) {
+        window.location.href = 'index.html';
+      } else {
+        alert('Could not save. Try again.');
+      }
+    });
+  </script>
+</body>
+</html>

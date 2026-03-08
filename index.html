@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomeClear — Projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">
+      <div class="logo-mark">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          <path d="M9 21V12h6v9"/>
+        </svg>
+      </div>
+      HomeClear
+    </a>
+    <div class="nav-user" id="nav-user"></div>
+  </nav>
+
+  <div class="wrap">
+    <p class="page-role" id="page-role"></p>
+    <h1 class="sec-title" style="margin-bottom: 16px;">Deals</h1>
+    <div id="project-list" class="project-list"></div>
+    <a href="new-project.html" class="btn-primary" id="btn-create-project">Create project</a>
+    <p class="footer" style="margin-top: 32px;" id="footer-text">One property per project.</p>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    (function () {
+      if (!window.HomeClear.requireAuth()) return;
+
+      var user = window.HomeClear.getCurrentUser();
+      var roleLabel = window.HomeClear.ROLE_LABELS[user.role] || user.role;
+
+      window.HomeClear.renderNavUser(document.getElementById('nav-user'));
+
+      var roleEl = document.getElementById('page-role');
+      roleEl.textContent = roleLabel + ' view';
+      roleEl.className = 'page-role ' + user.role;
+
+      var isListViewModel = user.role === 'agent' || user.role === 'solicitor';
+      document.getElementById('btn-create-project').style.display = isListViewModel ? '' : 'none';
+      document.getElementById('footer-text').textContent = isListViewModel
+        ? 'Agent and solicitor: add and manage deals. Sellers and buyers see their own.'
+        : 'Your deals. One property per project.';
+
+      var container = document.getElementById('project-list');
+      var projects = window.HomeClear.getProjects();
+
+      if (isListViewModel) {
+        container.className = 'project-list project-list--list';
+        var header = document.createElement('div');
+        header.className = 'deal-list-header';
+        header.innerHTML =
+          '<span class="deal-cell-address">Address</span>' +
+          '<span class="deal-cell-seller">Seller</span>' +
+          '<span class="deal-cell-buyer">Buyer</span>' +
+          '<span class="deal-cell-price">Price</span>' +
+          '<span>Status</span>' +
+          '<span></span>';
+        container.appendChild(header);
+        projects.forEach(function (p) {
+          var statusClass = (p.status === 'On track') ? 'on-track' : (p.status === 'At risk') ? 'at-risk' : 'delayed';
+          var row = document.createElement('div');
+          row.className = 'deal-row';
+          var a = document.createElement('a');
+          a.href = 'project.html?id=' + p.id;
+          a.className = 'deal-row-link';
+          a.innerHTML =
+            '<span class="deal-cell deal-cell-address">' + escapeHtml(p.address) + '</span>' +
+            '<span class="deal-cell deal-cell-seller deal-cell-meta">' + escapeHtml(p.sellerName || '—') + '</span>' +
+            '<span class="deal-cell deal-cell-buyer deal-cell-meta">' + escapeHtml(p.buyerName || '—') + '</span>' +
+            '<span class="deal-cell deal-cell-price">' + escapeHtml(p.salePrice) + '</span>' +
+            '<span class="deal-cell deal-cell-status">' +
+              '<span class="dot ' + statusClass + '" aria-hidden="true"></span>' +
+              escapeHtml(p.status || '—') +
+            '</span>' +
+            '<span class="deal-cell deal-cell-chevron" aria-hidden="true">' +
+              '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>' +
+            '</span>';
+          row.appendChild(a);
+          container.appendChild(row);
+        });
+      } else {
+        projects.forEach(function (p) {
+          var a = document.createElement('a');
+          a.href = 'project.html?id=' + p.id;
+          a.className = 'project-card';
+          a.innerHTML =
+            '<div class="project-card-address">' + escapeHtml(p.address) + '</div>' +
+            '<div class="project-card-meta">' + escapeHtml(p.agentName) + ' · ' + escapeHtml(p.solicitorName) + '</div>' +
+            '<div class="project-card-price">' + escapeHtml(p.salePrice) + '</div>';
+          container.appendChild(a);
+        });
+      }
+      function escapeHtml(s) {
+        var div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+      }
+    })();
+  </script>
+</body>
+</html>
