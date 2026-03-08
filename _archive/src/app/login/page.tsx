@@ -5,7 +5,14 @@ import { AuthIllustration } from "@/components/auth-illustration";
 import { SubmitButton } from "@/components/submit-button";
 import { mockLogin, mockDemoLogin } from "../actions/auth";
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
+  const showEmailError = error === "invalid_email";
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header variant="auth-login" />
@@ -22,6 +29,11 @@ export default function LoginPage() {
                 </p>
               </div>
               <div className="card-base p-8">
+          {showEmailError && (
+            <p className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-800" role="alert">
+              Please enter a valid email address.
+            </p>
+          )}
           <form action={mockLogin} className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-700">

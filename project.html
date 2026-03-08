@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>HomeClear — Deal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -10,7 +10,7 @@
 </head>
 <body>
   <nav>
-    <a href="index.html" class="logo">
+    <a href="dashboard.html" class="logo">
       <div class="logo-mark">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
@@ -24,11 +24,39 @@
 
   <div class="wrap">
     <p class="page-role" id="page-role"></p>
-    <a href="index.html" class="back-link">
+    <a href="dashboard.html" class="back-link" id="back-link">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       Back to deals
     </a>
 
+    <!-- Consumer view (Buyer/Seller): Instagram-style, simple -->
+    <div id="consumer-view" class="consumer-view" hidden>
+      <p class="consumer-address" id="consumer-address">—</p>
+      <p class="consumer-role-label" id="consumer-role-label">View as Buyer</p>
+      <div class="consumer-section">
+        <p class="consumer-label">Status</p>
+        <p class="consumer-status-big" id="consumer-status-big">—</p>
+      </div>
+      <div class="consumer-card">
+        <p class="consumer-label" id="consumer-completion-label">Moving in</p>
+        <p class="consumer-completion-date" id="consumer-completion-date">—</p>
+        <p class="consumer-done-msg" id="consumer-done-msg" hidden></p>
+      </div>
+      <div class="consumer-dates" id="consumer-dates-wrap" hidden>
+        <p class="consumer-label">Dates</p>
+        <p class="consumer-dates-value" id="consumer-dates-value">—</p>
+      </div>
+      <div class="consumer-section">
+        <p class="consumer-label">What you need to know</p>
+        <ul class="consumer-know-list" id="consumer-know-list"></ul>
+      </div>
+      <p class="consumer-footer">
+        <a href="#" id="consumer-link-full">Full detail</a> (Agent &amp; Solicitor view)
+      </p>
+    </div>
+
+    <!-- Expert view (full deal detail) -->
+    <div id="expert-view">
     <div class="deal-flow" id="deal-flow" aria-hidden="true">
       <div class="deal-flow-party deal-flow-seller">
         <span class="deal-flow-label">Seller</span>
@@ -94,6 +122,7 @@
     </div>
 
     <p class="footer">Updates appear here as the deal progresses.</p>
+    </div>
   </div>
 
   <div class="doc-modal" id="doc-modal" role="dialog" aria-modal="true" aria-labelledby="doc-modal-title" hidden>
@@ -125,10 +154,59 @@
 
       var params = new URLSearchParams(window.location.search);
       var id = params.get('id') || '1';
+      var viewFull = params.get('view') === 'full';
       var project = window.HomeClear.getProjectById(id);
       if (!project) {
         project = window.HomeClear.getDefaultProject();
       }
+
+      var isConsumer = (user.role === 'buyer' || user.role === 'seller') && !viewFull;
+      var consumerView = document.getElementById('consumer-view');
+      var expertView = document.getElementById('expert-view');
+
+      if (isConsumer) {
+        expertView.hidden = true;
+        consumerView.hidden = false;
+        document.getElementById('consumer-address').textContent = project.address || '—';
+        document.getElementById('consumer-role-label').textContent = 'View as ' + (user.role === 'seller' ? 'Seller' : 'Buyer');
+        document.getElementById('consumer-status-big').textContent = project.currentStage || project.status || '—';
+        document.getElementById('consumer-completion-label').textContent = user.role === 'seller' ? 'Completion date' : 'Moving in';
+        document.getElementById('consumer-completion-date').textContent = project.estimatedCompletion || 'TBC';
+        var tasks = window.HomeClear.getSaleTasks(id);
+        var tasksLeft = tasks.filter(function (t) { return !t.done; }).length;
+        var docs = window.HomeClear.getSaleDocuments(id);
+        var docsLeft = docs.filter(function (d) { return !d.received; }).length;
+        var whoNow = (project.currentStage && project.currentStage.toLowerCase().indexOf('search') !== -1) ? 'Solicitor' : 'Agent';
+        var listEl = document.getElementById('consumer-know-list');
+        listEl.innerHTML = '';
+        var stepsTotal = 5;
+        var li1 = document.createElement('li');
+        li1.innerHTML = '<span class="consumer-know-num">' + tasksLeft + '</span><div><strong>' + tasksLeft + ' tasks left</strong><p>Current step: ' + escapeHtml(project.currentStage || '—') + '. Handled by ' + whoNow + '.</p></div>';
+        listEl.appendChild(li1);
+        var li2 = document.createElement('li');
+        var docsLine = docsLeft === 0 ? 'No documents waiting.' : (docsLeft === 1 ? '1 document left to approve.' : docsLeft + ' documents left to approve.');
+        li2.innerHTML = '<span class="consumer-know-num">' + docsLeft + '</span><div><strong>' + docsLine + '</strong>' + (docsLeft > 0 ? '<p>Current one is with ' + whoNow + '.</p>' : '') + '</div>';
+        listEl.appendChild(li2);
+        var li3 = document.createElement('li');
+        li3.className = 'consumer-know-ok';
+        li3.innerHTML = '<strong>You\'re holding up nothing.</strong><p>' + whoNow + ' will be in touch when they need you.</p>';
+        listEl.appendChild(li3);
+        if (project.estimatedCompletion) {
+          document.getElementById('consumer-dates-wrap').hidden = false;
+          document.getElementById('consumer-dates-value').textContent = project.estimatedCompletion;
+        }
+        document.getElementById('consumer-link-full').href = 'project.html?id=' + id + '&view=full';
+      } else {
+        consumerView.hidden = true;
+        expertView.hidden = false;
+      }
+
+      function escapeHtml(s) {
+        var div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+      }
+
       document.getElementById('deal-seller').textContent = project.sellerName || '—';
       document.getElementById('deal-buyer').textContent = project.buyerName || '—';
       document.getElementById('hero-address').textContent = project.address;
@@ -221,12 +299,6 @@
       }
       sendBtn.addEventListener('click', sendMessage);
       inputEl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
-
-      function escapeHtml(s) {
-        var div = document.createElement('div');
-        div.textContent = s;
-        return div.innerHTML;
-      }
     })();
   </script>
 </body>

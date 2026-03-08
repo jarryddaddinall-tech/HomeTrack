@@ -14,6 +14,10 @@ import { UserMenu } from "@/components/user-menu";
 import { AddDocumentForm } from "@/components/add-document-form";
 import { DocumentStatusSelect } from "@/components/document-status-select";
 import { MortgageCalculator } from "@/components/mortgage-calculator";
+import { PropertyViewConsumer } from "@/components/property-view-consumer";
+import { PropertyViewSwitcher } from "@/components/property-view-switcher";
+
+type ViewMode = "buyer" | "seller" | "expert";
 
 const STAGE_ORDER: TransactionStage[] = [
   "offer_accepted",
@@ -42,10 +46,13 @@ function formatDate(dateStr: string) {
 
 export default async function PropertyDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ view?: string }>;
 }) {
   const { id } = await params;
+  const { view: viewParam } = await searchParams;
   const cookieStore = await cookies();
   const user = cookieStore.get("mock-auth")?.value ?? null;
 
@@ -56,6 +63,32 @@ export default async function PropertyDetailPage({
   const property = getPropertyById(id);
   if (!property) {
     notFound();
+  }
+
+  // Default to Buyer/Seller view (Instagram-simple); use Expert for full detail
+  const defaultView: ViewMode = property.type === "selling" ? "seller" : "buyer";
+  const view: ViewMode =
+    viewParam === "buyer" || viewParam === "seller" || viewParam === "expert"
+      ? viewParam
+      : defaultView;
+
+  if (view === "buyer" || view === "seller") {
+    return (
+      <div className="min-h-screen">
+        <header className="border-b border-white/40 bg-white/90 shadow-soft-sm backdrop-blur-md">
+          <div className="mx-auto flex max-w-4xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <Link href="/dashboard" className="font-display text-xl font-semibold text-slate-800">
+              HomeClear
+            </Link>
+            <div className="flex items-center gap-4">
+              <PropertyViewSwitcher propertyId={id} currentView={view} />
+              <UserMenu user={user} />
+            </div>
+          </div>
+        </header>
+        <PropertyViewConsumer property={property} variant={view} propertyId={id} />
+      </div>
+    );
   }
 
   const isSelling = property.type === "selling";

@@ -30,6 +30,8 @@ export function UserMenu({ user }: UserMenuProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const menuId = "user-menu-list";
+
   return (
     <div ref={menuRef} className="relative">
       <button
@@ -38,6 +40,7 @@ export function UserMenu({ user }: UserMenuProps) {
         className="flex h-9 w-9 items-center justify-center rounded-full bg-accent/10 text-sm font-medium text-accent transition-colors hover:bg-accent/20 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
         aria-expanded={isOpen}
         aria-haspopup="true"
+        aria-controls={menuId}
         aria-label="User menu"
       >
         {getInitials(user)}
@@ -45,6 +48,7 @@ export function UserMenu({ user }: UserMenuProps) {
 
       {isOpen && (
         <div
+          id={menuId}
           className="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded-xl border border-white/60 bg-white/95 py-1 shadow-card backdrop-blur-sm"
           role="menu"
         >

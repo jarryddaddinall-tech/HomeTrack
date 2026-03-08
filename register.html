@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>HomeClear — Log in</title>
+  <title>HomeClear — Register</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
@@ -22,27 +22,27 @@
     <nav class="site-nav">
       <a href="index.html#product">Product</a>
       <a href="index.html#use-case">Use case</a>
-      <a href="login.html" class="site-nav-current">Log in</a>
-      <a href="register.html" class="site-nav-cta">Register</a>
+      <a href="login.html">Log in</a>
+      <a href="register.html" class="site-nav-cta site-nav-current">Register</a>
     </nav>
   </header>
 
   <main class="marketing-main marketing-main--form">
-    <section class="login-form-section" id="sign-in">
+    <section class="login-form-section" id="register">
       <div class="welcome-form-card">
-        <h1 class="welcome-form-title">Welcome back</h1>
-        <p class="welcome-form-sub">Select your role to continue.</p>
-        <form id="login-form">
+        <h1 class="welcome-form-title">Create your account</h1>
+        <p class="welcome-form-sub">Choose your role to get started. No password required for demo.</p>
+        <form id="register-form">
           <div class="form-group">
             <select id="user" name="user" required>
               <option value="">— Select —</option>
             </select>
           </div>
           <div class="form-actions">
-            <button type="submit" class="btn-primary btn-primary-lg">Log in</button>
+            <button type="submit" class="btn-primary btn-primary-lg">Create account</button>
           </div>
         </form>
-        <p class="welcome-form-note">New to HomeClear? <a href="register.html">Register</a> to get started.</p>
+        <p class="welcome-form-note">Already have an account? <a href="login.html">Log in</a>.</p>
       </div>
     </section>
   </main>
@@ -79,7 +79,7 @@
         select.appendChild(opt);
       });
 
-      document.getElementById('login-form').addEventListener('submit', function (e) {
+      document.getElementById('register-form').addEventListener('submit', function (e) {
         e.preventDefault();
         var val = select.value;
         if (!val) return;

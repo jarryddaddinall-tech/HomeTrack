@@ -51,10 +51,10 @@
     return true;
   }
 
-  /** Call on login page; redirects to index if already signed in. */
+  /** Call on login/register page; redirects to dashboard if already signed in. */
   function redirectIfLoggedIn() {
     if (getCurrentUser()) {
-      window.location.href = 'index.html';
+      window.location.href = 'dashboard.html';
       return true;
     }
     return false;

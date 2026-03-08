@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { UserMenu } from "@/components/user-menu";
+import { Header } from "@/components/header";
 import { PropertyCard } from "@/components/property-card";
 import { getAllProperties } from "@/lib/properties";
 import { getAllProjects, PROBLEM_REASON_LABELS } from "@/lib/projects";
@@ -60,16 +60,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-white/40 bg-white/90 shadow-soft-sm backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <Link href="/dashboard" className="text-xl font-semibold text-slate-900">
-            HomeClear
-          </Link>
-          <nav className="flex items-center gap-6">
-            <UserMenu user={user} />
-          </nav>
-        </div>
-      </header>
+      <Header variant="dashboard" user={user} />
 
       <main className="mx-auto max-w-6xl px-4 py-8">
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

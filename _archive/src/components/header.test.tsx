@@ -20,6 +20,8 @@ describe("Header", () => {
 
   it("shows user email and log out when user is provided", () => {
     render(<Header variant="dashboard" user="test@example.com" />);
+    const userMenuButton = screen.getByRole("button", { name: /user menu/i });
+    userMenuButton.click();
     expect(screen.getByText("test@example.com")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /log out/i })).toBeInTheDocument();
   });

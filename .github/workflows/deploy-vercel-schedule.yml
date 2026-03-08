@@ -1,0 +1,21 @@
+# Trigger a Vercel deployment every 2 minutes via Deploy Hook.
+# Requires: Vercel project connected to this repo, and GitHub secret VERCEL_DEPLOY_HOOK_URL.
+name: Vercel deploy every 2 min
+
+on:
+  schedule:
+    # Every 2 minutes (cron: minute hour day month weekday)
+    - cron: '*/2 * * * *'
+  workflow_dispatch: # Allow manual run from Actions tab
+
+jobs:
+  trigger-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deployment
+        run: |
+          if [ -z "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}" ]; then
+            echo "VERCEL_DEPLOY_HOOK_URL secret is not set. Skipping."
+            exit 0
+          fi
+          curl -sf -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"

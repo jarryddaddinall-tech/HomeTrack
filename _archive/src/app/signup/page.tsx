@@ -8,10 +8,11 @@ import { mockSignup, mockDemoLogin } from "../actions/auth";
 export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: Promise<{ from?: string; reason?: string; postcode?: string; propertyType?: string; name?: string }>;
+  searchParams: Promise<{ from?: string; reason?: string; postcode?: string; propertyType?: string; name?: string; error?: string }>;
 }) {
   const params = await searchParams;
   const fromStart = params.from === "start";
+  const showEmailError = params.error === "invalid_email";
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -26,6 +27,11 @@ export default async function SignupPage({
           <p className="mt-2 text-slate-600">
             {fromStart ? "Create your account to save your move and get started." : "Get started in seconds—we&apos;ll keep it simple."}
           </p>
+          {showEmailError && (
+            <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-800" role="alert">
+              Please enter a valid email address.
+            </p>
+          )}
           <form action={mockSignup} className="mt-6 space-y-4">
             {fromStart && (
               <>

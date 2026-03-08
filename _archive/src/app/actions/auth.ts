@@ -6,9 +6,18 @@ import { addProject, type ProblemReason } from "@/lib/projects";
 
 const MOCK_AUTH_COOKIE = "mock-auth";
 
+function isValidEmail(value: string | null | undefined): boolean {
+  if (!value || typeof value !== "string") return false;
+  const trimmed = value.trim();
+  return trimmed.length > 0 && trimmed.includes("@") && trimmed.includes(".");
+}
+
 export async function mockLogin(formData: FormData) {
-  const email = formData.get("email") as string;
-  (await cookies()).set(MOCK_AUTH_COOKIE, email || "demo@homeclear.app", {
+  const email = (formData.get("email") as string)?.trim();
+  if (!isValidEmail(email)) {
+    redirect("/login?error=invalid_email");
+  }
+  (await cookies()).set(MOCK_AUTH_COOKIE, email, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -19,9 +28,11 @@ export async function mockLogin(formData: FormData) {
 }
 
 export async function mockSignup(formData: FormData) {
-  const email = formData.get("email") as string;
-  const name = formData.get("name") as string;
-  (await cookies()).set(MOCK_AUTH_COOKIE, email || "demo@homeclear.app", {
+  const email = (formData.get("email") as string)?.trim();
+  if (!isValidEmail(email)) {
+    redirect("/signup?error=invalid_email");
+  }
+  (await cookies()).set(MOCK_AUTH_COOKIE, email, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",

@@ -37,6 +37,7 @@ export function StartHereForm({ isLoggedIn }: { isLoggedIn: boolean }) {
   const [postcode, setPostcode] = useState("");
   const [valuation, setValuation] = useState<{ min: number; max: number } | null>(null);
   const [valuationLoading, setValuationLoading] = useState(false);
+  const [valuationError, setValuationError] = useState<string | null>(null);
 
   // Mortgage calculator state
   const [deposit, setDeposit] = useState("");
@@ -49,13 +50,21 @@ export function StartHereForm({ isLoggedIn }: { isLoggedIn: boolean }) {
     const trimmed = postcode.trim();
     if (trimmed.length < 4) {
       setValuation(null);
+      setValuationError(null);
       return;
     }
     setValuationLoading(true);
-    getValuation(trimmed).then((result) => {
-      setValuation(result);
-      setValuationLoading(false);
-    });
+    setValuationError(null);
+    getValuation(trimmed)
+      .then((result) => {
+        setValuation(result);
+        setValuationError(null);
+      })
+      .catch(() => {
+        setValuation(null);
+        setValuationError("We couldn’t get a valuation for that postcode. Please try again.");
+      })
+      .finally(() => setValuationLoading(false));
   };
 
   // Mortgage calc: typical 4.5x income multiple, or affordability
@@ -131,6 +140,12 @@ export function StartHereForm({ isLoggedIn }: { isLoggedIn: boolean }) {
               <p className="mt-2 flex items-center gap-2 text-sm font-medium text-accent">
                 <span className="h-2 w-2 rounded-full bg-accent" />
                 Your home could be worth {formatPrice(valuation.min)}–{formatPrice(valuation.max)} based on similar sales in your area.
+              </p>
+            )}
+            {valuationError && (
+              <p className="mt-2 flex items-center gap-2 text-sm font-medium text-amber-700" role="alert">
+                <span className="h-2 w-2 rounded-full bg-amber-500" />
+                {valuationError}
               </p>
             )}
           </div>
@@ -228,7 +243,7 @@ export function StartHereForm({ isLoggedIn }: { isLoggedIn: boolean }) {
               className="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 shadow-soft-sm placeholder:text-slate-400 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent/30"
             />
           </div>
-          <div className="space-y-2">
+          <div>
             <label htmlFor="termYears" className="block text-sm font-medium text-slate-700">
               Mortgage term (years)
             </label>
@@ -239,7 +254,7 @@ export function StartHereForm({ isLoggedIn }: { isLoggedIn: boolean }) {
               max="40"
               value={termYears}
               onChange={(e) => setTermYears(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 shadow-soft-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent/30"
+              className="mt-1.5 w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 shadow-soft-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent/30"
             />
           </div>
           <div>
