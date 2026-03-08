@@ -12,7 +12,7 @@
   <header class="app-header">
     <a href="dashboard.html" class="logo">
       <div class="logo-mark">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
           <path d="M9 21V12h6v9"/>
         </svg>
@@ -50,23 +50,6 @@
         <a href="new-project.html" class="btn-primary" id="btn-create-project">Create project</a>
       </section>
     </div>
-
-    <footer class="app-footer">
-      <div class="app-footer-inner">
-        <div class="app-footer-brand">
-          <a href="dashboard.html" class="app-footer-logo">HomeClear</a>
-          <p class="app-footer-tagline">One place for your sale, your purchase, and your peace of mind.</p>
-        </div>
-        <nav class="app-footer-links">
-          <a href="dashboard.html">Deals</a>
-          <a href="new-project.html">New project</a>
-          <a href="login.html">Log in</a>
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-        </nav>
-      </div>
-      <p class="app-footer-copy">&copy; 2026 HomeClear. All rights reserved.</p>
-    </footer>
   </main>
 
   <script src="app.js"></script>
@@ -88,6 +71,12 @@
 
       var container = document.getElementById('project-list');
       var projects = window.HomeClear.getProjects();
+
+      /* When user has exactly one deal, go straight to it (no need for list). */
+      if (projects.length === 1) {
+        window.location.replace('project.html?id=' + projects[0].id);
+        return;
+      }
 
       if (isListViewModel && projects.length > 0) {
         var statsEl = document.getElementById('dashboard-stats');

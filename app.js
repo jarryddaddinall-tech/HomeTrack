@@ -51,13 +51,16 @@
     return true;
   }
 
-  /** Call on login/register page; redirects to dashboard if already signed in. */
+  /** Call on login/register page; redirect to dashboard or straight to deal if one project. */
   function redirectIfLoggedIn() {
-    if (getCurrentUser()) {
+    if (!getCurrentUser()) return false;
+    var projects = getProjects();
+    if (projects.length === 1) {
+      window.location.href = 'project.html?id=' + projects[0].id;
+    } else {
       window.location.href = 'dashboard.html';
-      return true;
     }
-    return false;
+    return true;
   }
 
   /** Get initials from name (e.g. "James Miller" -> "JM", "Mary" -> "MA"). */
