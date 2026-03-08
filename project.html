@@ -29,30 +29,37 @@
       Back to deals
     </a>
 
-    <!-- Consumer view (Buyer/Seller): Instagram-style, simple -->
+    <!-- Consumer view (Buyer/Seller): Instagram-style, simple — card with house image -->
     <div id="consumer-view" class="consumer-view" hidden>
-      <p class="consumer-address" id="consumer-address">—</p>
-      <p class="consumer-role-label" id="consumer-role-label">View as Buyer</p>
-      <div class="consumer-section">
-        <p class="consumer-label">Status</p>
-        <p class="consumer-status-big" id="consumer-status-big">—</p>
-      </div>
-      <div class="consumer-card">
-        <p class="consumer-label" id="consumer-completion-label">Moving in</p>
-        <p class="consumer-completion-date" id="consumer-completion-date">—</p>
-        <p class="consumer-done-msg" id="consumer-done-msg" hidden></p>
-      </div>
-      <div class="consumer-dates" id="consumer-dates-wrap" hidden>
-        <p class="consumer-label">Dates</p>
-        <p class="consumer-dates-value" id="consumer-dates-value">—</p>
-      </div>
-      <div class="consumer-section">
-        <p class="consumer-label">What you need to know</p>
-        <ul class="consumer-know-list" id="consumer-know-list"></ul>
-      </div>
-      <p class="consumer-footer">
-        <a href="#" id="consumer-link-full">Full detail</a> (Agent &amp; Solicitor view)
-      </p>
+      <article class="consumer-detail-card">
+        <div class="consumer-card-image">
+          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="" class="consumer-house-img">
+        </div>
+        <div class="consumer-card-body">
+          <p class="consumer-address" id="consumer-address">—</p>
+          <p class="consumer-role-label" id="consumer-role-label">View as Buyer</p>
+          <div class="consumer-section">
+            <p class="consumer-label">Status</p>
+            <p class="consumer-status-big" id="consumer-status-big">—</p>
+          </div>
+          <div class="consumer-card">
+            <p class="consumer-label" id="consumer-completion-label">Moving in</p>
+            <p class="consumer-completion-date" id="consumer-completion-date">—</p>
+            <p class="consumer-done-msg" id="consumer-done-msg" hidden></p>
+          </div>
+          <div class="consumer-dates" id="consumer-dates-wrap" hidden>
+            <p class="consumer-label">Dates</p>
+            <p class="consumer-dates-value" id="consumer-dates-value">—</p>
+          </div>
+          <div class="consumer-section">
+            <p class="consumer-label">What you need to know</p>
+            <ul class="consumer-know-list" id="consumer-know-list"></ul>
+          </div>
+          <p class="consumer-footer">
+            <a href="#" id="consumer-link-full">Full detail</a> (Agent &amp; Solicitor view)
+          </p>
+        </div>
+      </article>
     </div>
 
     <!-- Expert view (full deal detail) -->

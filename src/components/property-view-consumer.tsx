@@ -104,107 +104,120 @@ export function PropertyViewConsumer({ property, variant, propertyId }: Property
           Back
         </Link>
 
-        {/* Address — one line, subtle */}
-        <p className="text-slate-500 text-sm">
-          {[property.address, property.town, property.postcode].filter(Boolean).join(", ")}
-        </p>
-        <p className="mt-0.5 text-xs font-medium uppercase tracking-wider text-slate-400">
-          View as {copy.roleLabel}
-        </p>
+        {/* House details card with Unsplash image */}
+        <article className="rounded-2xl border border-slate-200/80 bg-white shadow-sm overflow-hidden">
+          {/* Unsplash house image */}
+          <div className="relative w-full aspect-[16/10] bg-slate-100">
+            <img
+              src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80"
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </div>
+          <div className="p-6">
+            {/* Address — one line, subtle */}
+            <p className="text-slate-500 text-sm">
+              {[property.address, property.town, property.postcode].filter(Boolean).join(", ")}
+            </p>
+            <p className="mt-0.5 text-xs font-medium uppercase tracking-wider text-slate-400">
+              View as {copy.roleLabel}
+            </p>
 
-        {/* 1. STATUS — biggest, first thing (Instagram-style) */}
-        <div className="mt-8">
-          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Status</p>
-          <p className="mt-1.5 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-            {property.status === "completion" ? "Complete" : statusLabel}
-          </p>
-        </div>
+            {/* 1. STATUS — biggest, first thing (Instagram-style) */}
+            <div className="mt-8">
+              <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Status</p>
+              <p className="mt-1.5 text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                {property.status === "completion" ? "Complete" : statusLabel}
+              </p>
+            </div>
 
-        {/* 2. COMPLETION — nice and big, the date that matters */}
-        <div className="mt-10 rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm">
-          <p className="text-sm font-semibold uppercase tracking-wider text-slate-400">
-            {copy.completionHeadline}
-          </p>
-          <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            {property.status === "completion" && completionDate
-              ? formatDate(completionDate)
-              : completionDate
-                ? formatDate(completionDate)
-                : "TBC"}
-          </p>
-          {property.status === "completion" && (
-            <p className="mt-3 text-lg font-medium text-emerald-600">{copy.done}</p>
-          )}
-        </div>
+            {/* 2. COMPLETION — nice and big, the date that matters */}
+            <div className="mt-10 rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm">
+              <p className="text-sm font-semibold uppercase tracking-wider text-slate-400">
+                {copy.completionHeadline}
+              </p>
+              <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                {property.status === "completion" && completionDate
+                  ? formatDate(completionDate)
+                  : completionDate
+                    ? formatDate(completionDate)
+                    : "TBC"}
+              </p>
+              {property.status === "completion" && (
+                <p className="mt-3 text-lg font-medium text-emerald-600">{copy.done}</p>
+              )}
+            </div>
 
-        {/* 3. DATES — clear and visible (only if we have more than completion) */}
-        {completionDate && property.status !== "completion" && (
-          <div className="mt-6 rounded-xl bg-white/80 px-5 py-4 border border-slate-100">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Dates</p>
-            <p className="mt-2 text-lg font-semibold text-slate-800">
-              {formatDate(completionDate)}
+            {/* 3. DATES — clear and visible (only if we have more than completion) */}
+            {completionDate && property.status !== "completion" && (
+              <div className="mt-6 rounded-xl bg-white/80 px-5 py-4 border border-slate-100">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Dates</p>
+                <p className="mt-2 text-lg font-semibold text-slate-800">
+                  {formatDate(completionDate)}
+                </p>
+              </div>
+            )}
+
+            {/* 4. WHAT YOU NEED TO KNOW — minimal, no detail */}
+            <div className="mt-10">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                What you need to know
+              </p>
+              <ul className="mt-4 space-y-4">
+                {property.status !== "completion" && (
+                  <>
+                    <li className="flex items-start gap-3">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200/80 text-base font-bold text-slate-700">
+                        {stepsLeft}
+                      </span>
+                      <div>
+                        <p className="font-semibold text-slate-900">
+                          {stepsLeft} {copy.stepsLabel}
+                        </p>
+                        <p className="mt-0.5 text-slate-600">
+                          Current step: {statusLabel}. Handled by {whoNow}.
+                        </p>
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200/80 text-base font-bold text-slate-700">
+                        {docsLeft}
+                      </span>
+                      <div>
+                        <p className="font-semibold text-slate-900">{copy.documentsLine(docsLeft)}</p>
+                        {docsLeft > 0 && (
+                          <p className="mt-0.5 text-slate-600">{copy.currentDocWith(currentStepWith)}</p>
+                        )}
+                      </div>
+                    </li>
+                    <li className="rounded-xl bg-emerald-50/90 border border-emerald-100 px-4 py-3">
+                      <p className="font-medium text-emerald-800">{copy.holdingUp}</p>
+                      <p className="mt-1 text-sm text-emerald-700">
+                        {whoNow} will be in touch when they need you.
+                      </p>
+                    </li>
+                  </>
+                )}
+                {property.status === "completion" && (
+                  <li className="rounded-xl bg-emerald-50/90 border border-emerald-100 px-4 py-3">
+                    <p className="font-medium text-emerald-800">{copy.done}</p>
+                  </li>
+                )}
+              </ul>
+            </div>
+
+            {/* Optional: full detail for Agent & Solicitor */}
+            <p className="mt-12 text-center text-xs text-slate-400">
+              <Link
+                href={`/dashboard/property/${propertyId}?view=expert`}
+                className="underline hover:text-slate-600"
+              >
+                Full detail
+              </Link>{" "}
+              (Agent & Solicitor view)
             </p>
           </div>
-        )}
-
-        {/* 4. WHAT YOU NEED TO KNOW — minimal, no detail */}
-        <div className="mt-10">
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            What you need to know
-          </p>
-          <ul className="mt-4 space-y-4">
-            {property.status !== "completion" && (
-              <>
-                <li className="flex items-start gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200/80 text-base font-bold text-slate-700">
-                    {stepsLeft}
-                  </span>
-                  <div>
-                    <p className="font-semibold text-slate-900">
-                      {stepsLeft} {copy.stepsLabel}
-                    </p>
-                    <p className="mt-0.5 text-slate-600">
-                      Current step: {statusLabel}. Handled by {whoNow}.
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-200/80 text-base font-bold text-slate-700">
-                    {docsLeft}
-                  </span>
-                  <div>
-                    <p className="font-semibold text-slate-900">{copy.documentsLine(docsLeft)}</p>
-                    {docsLeft > 0 && (
-                      <p className="mt-0.5 text-slate-600">{copy.currentDocWith(currentStepWith)}</p>
-                    )}
-                  </div>
-                </li>
-                <li className="rounded-xl bg-emerald-50/90 border border-emerald-100 px-4 py-3">
-                  <p className="font-medium text-emerald-800">{copy.holdingUp}</p>
-                  <p className="mt-1 text-sm text-emerald-700">
-                    {whoNow} will be in touch when they need you.
-                  </p>
-                </li>
-              </>
-            )}
-            {property.status === "completion" && (
-              <li className="rounded-xl bg-emerald-50/90 border border-emerald-100 px-4 py-3">
-                <p className="font-medium text-emerald-800">{copy.done}</p>
-              </li>
-            )}
-          </ul>
-        </div>
-
-        {/* Optional: full detail for Agent & Solicitor */}
-        <p className="mt-12 text-center text-xs text-slate-400">
-          <Link
-            href={`/dashboard/property/${propertyId}?view=expert`}
-            className="underline hover:text-slate-600"
-          >
-            Full detail
-          </Link>{" "}
-          (Agent & Solicitor view)
-        </p>
+        </article>
       </main>
     </div>
   );

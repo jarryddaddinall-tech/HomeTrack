@@ -2,6 +2,7 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import { PropertyCard } from "@/components/property-card";
 import { getAllProperties } from "@/lib/properties";
 import { getAllProjects, PROBLEM_REASON_LABELS } from "@/lib/projects";
@@ -59,10 +60,10 @@ export default async function DashboardPage() {
   const reminders = getUpcomingReminders(allProperties);
 
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen flex-col bg-white">
       <Header variant="dashboard" user={user} />
 
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <main className="mx-auto max-w-7xl flex-1 px-4 py-8">
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="page-title">
@@ -183,7 +184,7 @@ export default async function DashboardPage() {
                   </span>
                   Properties you&apos;re selling
                 </h2>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-6 sm:grid-cols-2">
                   {sellingProperties.map((property) => (
                     <PropertyCard key={property.id} property={property} />
                   ))}
@@ -199,7 +200,7 @@ export default async function DashboardPage() {
                   </span>
                   Properties you&apos;re buying
                 </h2>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-6 sm:grid-cols-2">
                   {buyingProperties.map((property) => (
                     <PropertyCard key={property.id} property={property} />
                   ))}
@@ -211,6 +212,8 @@ export default async function DashboardPage() {
           </>
         )}
       </main>
+
+      <Footer variant="dashboard" />
     </div>
   );
 }

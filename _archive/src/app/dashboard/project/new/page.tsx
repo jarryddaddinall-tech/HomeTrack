@@ -25,7 +25,7 @@ export default async function NewProjectPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-      <header className="border-b border-slate-100 bg-white/80 shadow-soft-sm backdrop-blur-sm">
+      <header className="border-b border-black/5 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-4">
           <Link href="/dashboard" className="text-xl font-semibold text-slate-900">
             HomeClear

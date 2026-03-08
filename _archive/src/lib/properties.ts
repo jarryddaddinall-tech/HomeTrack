@@ -25,6 +25,8 @@ export interface Property {
   postcode: string;
   type: TransactionType;
   price: number;
+  /** Optional main image URL for listing/card display */
+  imageUrl?: string;
   beds?: number;
   baths?: number;
   propertyType?: string;

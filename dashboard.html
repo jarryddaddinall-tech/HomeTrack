@@ -26,6 +26,11 @@
     <div class="wrap">
       <p class="page-role" id="page-role"></p>
 
+      <div class="dashboard-stats" id="dashboard-stats" hidden>
+        <span class="dashboard-stat" id="dashboard-stat-count">0 deals</span>
+        <span class="dashboard-stat dashboard-stat--muted" id="dashboard-stat-summary"></span>
+      </div>
+
       <section class="dashboard-hero">
         <div class="dashboard-hero-visual" aria-hidden="true">
           <svg class="dashboard-hero-svg" viewBox="0 0 240 160" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -83,6 +88,22 @@
 
       var container = document.getElementById('project-list');
       var projects = window.HomeClear.getProjects();
+
+      if (isListViewModel && projects.length > 0) {
+        var statsEl = document.getElementById('dashboard-stats');
+        var countEl = document.getElementById('dashboard-stat-count');
+        var summaryEl = document.getElementById('dashboard-stat-summary');
+        statsEl.hidden = false;
+        countEl.textContent = projects.length + ' deal' + (projects.length === 1 ? '' : 's');
+        var onTrack = projects.filter(function(p) { return p.status === 'On track'; }).length;
+        var atRisk = projects.filter(function(p) { return p.status === 'At risk'; }).length;
+        var delayed = projects.filter(function(p) { return p.status === 'Delayed'; }).length;
+        var parts = [];
+        if (onTrack) parts.push(onTrack + ' on track');
+        if (atRisk) parts.push(atRisk + ' at risk');
+        if (delayed) parts.push(delayed + ' delayed');
+        summaryEl.textContent = parts.length ? parts.join(' · ') : '';
+      }
 
       if (isListViewModel) {
         container.className = 'project-list project-list--list';

@@ -24,7 +24,7 @@ export default async function AddPropertyPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
-      <header className="border-b border-slate-200 bg-white/80 backdrop-blur-sm">
+      <header className="border-b border-black/5 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-4">
           <Link href="/dashboard" className="text-xl font-semibold text-slate-800">
             HomeClear

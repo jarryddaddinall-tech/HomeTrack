@@ -5,38 +5,44 @@ import { HeroVisual } from "@/components/hero-visual";
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-white">
       <Header variant="marketing" />
 
       <main className="flex-1">
-        <div className="mx-auto max-w-6xl px-4 py-28 sm:py-32">
-          <div className="text-center">
-            <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
-              Moving home is a big deal.
-            </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600 sm:text-xl">
-              We&apos;re here to make it feel less chaotic. One place for your sale, your purchase, and your peace of mind.
-            </p>
-            <p className="mt-3 text-sm text-slate-500">
-              Free to try · No jargon, no chasing
-            </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-4">
-              <Link
-                href="/start"
-                className="btn-primary-lg w-full bg-accent sm:w-auto"
-              >
-                Thinking about moving? Start here
-              </Link>
-              <Link
-                href="/login"
-                className="text-slate-600 underline-offset-4 transition-colors hover:text-slate-900 hover:underline sm:ml-0"
-              >
-                Log in
-              </Link>
-            </div>
+        {/* Hero */}
+        <section className="mx-auto max-w-5xl px-4 pt-24 pb-16 sm:pt-32 sm:pb-24 text-center">
+          <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl lg:leading-tight" style={{ color: "var(--color-primary-dark)" }}>
+            Moving home is a{" "}
+            <span className="relative inline-block">
+              big deal
+              <span className="absolute bottom-1 left-0 right-0 h-2 bg-accent-300/60 rounded-full -z-10" aria-hidden />
+            </span>
+            .
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg sm:text-xl opacity-90" style={{ color: "var(--color-primary-dark)" }}>
+            HomeClear helps you stay on top of your sale and purchase—so you spend less time chasing and more time planning.
+          </p>
+          <p className="mt-2 text-sm opacity-75" style={{ color: "var(--color-primary-dark)" }}>
+            Free to try · No jargon, no chasing
+          </p>
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-4">
+            <Link href="/start" className="btn-landing-primary w-full sm:w-auto">
+              Get started
+            </Link>
+            <Link
+              href="/login"
+              className="text-sm font-medium opacity-80 transition-colors hover:opacity-100"
+              style={{ color: "var(--color-primary-dark)" }}
+            >
+              Log in
+            </Link>
           </div>
+        </section>
+
+        {/* How it works / Features */}
+        <section id="how-it-works" className="scroll-mt-20">
           <HeroVisual />
-        </div>
+        </section>
       </main>
 
       <Footer />

@@ -75,7 +75,7 @@ export default async function PropertyDetailPage({
   if (view === "buyer" || view === "seller") {
     return (
       <div className="min-h-screen">
-        <header className="border-b border-white/40 bg-white/90 shadow-soft-sm backdrop-blur-md">
+        <header className="border-b border-black/5 bg-white/95 backdrop-blur-md">
           <div className="mx-auto flex max-w-4xl flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
             <Link href="/dashboard" className="font-display text-xl font-semibold text-slate-800">
               HomeClear
@@ -101,7 +101,7 @@ export default async function PropertyDetailPage({
 
   return (
     <div className="min-h-screen">
-      <header className="border-b border-white/40 bg-white/90 shadow-soft-sm backdrop-blur-md">
+      <header className="border-b border-black/5 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
           <Link href="/dashboard" className="text-xl font-semibold text-slate-900">
             HomeClear
